@@ -61,7 +61,8 @@ export const CONFIG = {
                 contenido: "Porque hoy celebramos la existencia de un ser extraordinario. Que tus días estén siempre colmados de paz, salud, amor incondicional y esa magia única que solo tú sabes transmitir al mundo."
             }
         ],
-        firma: "Con todo el cariño de quienes te admiran y quieren, en este y en todos los mundos."
+        firma: "Con todo el cariño de quienes te admiran y quieren, en este y en todos los mundos.",
+        posdata: "P.D.: Si me acuerdo te doy 5 subs en el siguiente directo \"depende de si ya está el canje de mover las chichis\" 🤭✨"
     },
 
     // 📖 Escena 4: Galería de Recuerdos

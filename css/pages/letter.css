@@ -74,6 +74,28 @@
     padding-top: 1.2rem;
 }
 
+.letter-postscript {
+    margin-top: 1.8rem;
+    padding: 1rem 1.3rem;
+    background: rgba(180, 83, 9, 0.08);
+    border-left: 3.5px solid #b45309;
+    border-radius: 0 14px 14px 0;
+    font-family: var(--font-subheading);
+    font-size: 1.15rem;
+    font-style: italic;
+    line-height: 1.6;
+    color: #451a03;
+    text-align: left;
+}
+
+.letter-postscript .ps-label {
+    font-weight: 700;
+    color: #92400e;
+    font-style: normal;
+    font-family: var(--font-heading);
+    margin-right: 0.35rem;
+}
+
 /* Símbolo Secreto Oculto */
 .letter-hidden-rune-symbol {
     display: inline-block;
