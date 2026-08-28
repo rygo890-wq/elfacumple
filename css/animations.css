@@ -1,0 +1,159 @@
+/**
+ * ✨ ANIMACIONES KEYFRAMES & EFECTOS MÁGICOS
+ */
+
+/* Desplazamiento de niebla */
+@keyframes driftFog {
+    0% { transform: translateX(0) scaleY(1); }
+    50% { transform: translateX(-25%) scaleY(1.1); }
+    100% { transform: translateX(-50%) scaleY(1); }
+}
+
+/* Levitación suave */
+@keyframes floatGentle {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(1deg); }
+}
+
+/* Pulso dorado */
+@keyframes goldPulse {
+    0%, 100% {
+        box-shadow: 0 0 15px rgba(251, 191, 36, 0.4), 0 0 30px rgba(251, 191, 36, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 25px rgba(251, 191, 36, 0.9), 0 0 50px rgba(251, 191, 36, 0.5);
+    }
+}
+
+/* Pulso esmeralda */
+@keyframes emeraldPulse {
+    0%, 100% {
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(16, 185, 129, 0.8), 0 0 50px rgba(52, 211, 153, 0.4);
+    }
+}
+
+/* Vuelo de chispas mágicas */
+@keyframes flySpark {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--tx, 30px), var(--ty, 30px)) scale(0);
+        opacity: 0;
+    }
+}
+
+/* Barras del ecualizador de audio */
+@keyframes waveBar {
+    0% { height: 4px; }
+    100% { height: 16px; }
+}
+
+/* Giro alegre de la elfa guía */
+@keyframes spinJoy {
+    0% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.25) rotate(180deg); }
+    100% { transform: scale(1) rotate(360deg); }
+}
+
+/* Parpadeo de llama de vela */
+@keyframes candleFlameFlicker {
+    0%, 100% {
+        transform: scale(1) skewX(0deg);
+        filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.9));
+    }
+    25% {
+        transform: scale(1.05, 0.95) skewX(-2deg);
+        filter: drop-shadow(0 0 14px rgba(251, 191, 36, 1));
+    }
+    50% {
+        transform: scale(0.95, 1.08) skewX(3deg);
+        filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.8));
+    }
+    75% {
+        transform: scale(1.02, 0.98) skewX(-1deg);
+        filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.95));
+    }
+}
+
+/* Humo etéreo al apagar la vela */
+@keyframes smokeRiseAnim {
+    0% {
+        transform: translateY(0) scale(0.6);
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateY(-50px) scale(2.2);
+        opacity: 0;
+    }
+}
+
+/* Vuelo de mariposa */
+@keyframes butterflyFlight {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    25% {
+        transform: translate(80px, -60px) rotate(15deg);
+    }
+    50% {
+        transform: translate(160px, 20px) rotate(-10deg);
+    }
+    75% {
+        transform: translate(240px, -80px) rotate(20deg);
+    }
+    100% {
+        transform: translate(320px, -120px) rotate(0deg);
+        opacity: 0;
+    }
+}
+
+/* Resonancia de cristal */
+@keyframes crystalResonanceAnim {
+    0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 10px var(--color-lunar-cyan));
+    }
+    50% {
+        transform: scale(1.15);
+        filter: drop-shadow(0 0 30px var(--color-lunar-cyan)) drop-shadow(0 0 50px #ffffff);
+    }
+}
+
+/* Ascenso de faroles élficos flotantes */
+@keyframes lanternFloatUp {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.95;
+    }
+    90% {
+        opacity: 0.85;
+    }
+    100% {
+        transform: translateY(-110vh) translateX(var(--sway-offset, 30px));
+        opacity: 0;
+    }
+}
+
+/* Resplandor lunar global */
+body.lunar-eclipse-glow .forest-backdrop {
+    filter: hue-rotate(180deg) brightness(1.4) contrast(1.1);
+    transition: filter 1.5s ease;
+}
+
+/* Entrada al bosque */
+body.entering-forest .forest-backdrop {
+    transform: scale(1.08);
+    opacity: 0.5;
+    transition: transform 2s cubic-bezier(0.16, 1, 0.3, 1), opacity 2s ease;
+}

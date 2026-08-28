@@ -1,0 +1,144 @@
+/**
+ * 🌲 Estilos para pages/forest.html (Minijuego: Encontrar la Luciérnaga 3 Veces)
+ */
+
+.forest-scene-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    position: relative;
+    z-index: 20;
+}
+
+/* Tarjeta Inicial de Instrucciones */
+.forest-intro-card {
+    background: radial-gradient(circle at center, rgba(11, 26, 18, 0.92) 0%, rgba(4, 10, 6, 0.98) 100%);
+    border: 1.5px solid rgba(251, 191, 36, 0.4);
+    border-radius: 28px;
+    padding: 2.5rem 2.8rem;
+    max-width: 680px;
+    margin: 0 auto;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), var(--glow-gold);
+    backdrop-filter: blur(12px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.forest-intro-card.hidden {
+    opacity: 0;
+    transform: scale(0.92) translateY(-20px);
+    pointer-events: none;
+    display: none;
+}
+
+.forest-mission-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    color: var(--color-gold-bright);
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+}
+
+.forest-mission-desc {
+    font-family: var(--font-subheading);
+    font-size: 1.2rem;
+    color: var(--color-parchment-bg);
+    line-height: 1.9;
+    font-style: italic;
+    margin-bottom: 2rem;
+}
+
+/* Contador sutil en pantalla durante el juego */
+.forest-counter-badge {
+    position: fixed;
+    top: 5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(11, 26, 18, 0.8);
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    border-radius: 9999px;
+    padding: 0.5rem 1.4rem;
+    font-family: var(--font-subheading);
+    font-size: 1.05rem;
+    color: var(--color-gold-bright);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 30;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+.forest-counter-badge.visible {
+    opacity: 1;
+}
+
+/* Luciérnaga Muy Pequeña (10px) que brilla más cada 3 segundos */
+.special-guide-firefly {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff 0%, #fef08a 40%, #f59e0b 100%);
+    box-shadow: 0 0 8px #fef08a, 0 0 16px #fbbf24, 0 0 30px rgba(16, 185, 129, 0.5);
+    cursor: pointer;
+    z-index: 40;
+    display: none;
+    animation: fireflyPulse3s 3s infinite ease-in-out, floatGentle 4s ease-in-out infinite alternate;
+    transition: transform 0.25s ease, opacity 0.3s ease;
+    user-select: none;
+}
+
+.special-guide-firefly:hover {
+    transform: scale(2);
+    box-shadow: 0 0 20px #ffffff, 0 0 40px #fbbf24, 0 0 70px #10b981;
+}
+
+.special-guide-firefly.fleeing {
+    opacity: 0;
+    transform: scale(0.2);
+}
+
+/* Destello más brillante exactamente cada 3 segundos */
+@keyframes fireflyPulse3s {
+    0%, 65% {
+        opacity: 0.5;
+        transform: scale(1);
+        box-shadow: 0 0 6px #fef08a, 0 0 12px rgba(251, 191, 36, 0.3);
+    }
+    82%, 88% {
+        opacity: 1;
+        transform: scale(1.5);
+        box-shadow: 0 0 20px #ffffff, 0 0 40px #fbbf24, 0 0 70px rgba(16, 185, 129, 0.95);
+    }
+    100% {
+        opacity: 0.5;
+        transform: scale(1);
+        box-shadow: 0 0 6px #fef08a, 0 0 12px rgba(251, 191, 36, 0.3);
+    }
+}
+
+/* Tarjeta de Victoria al encontrar las 3 */
+.forest-victory-card {
+    background: radial-gradient(circle at center, rgba(11, 26, 18, 0.94) 0%, rgba(4, 10, 6, 0.98) 100%);
+    border: 1.5px solid var(--color-gold-magic);
+    border-radius: 28px;
+    padding: 2.5rem 3rem;
+    max-width: 680px;
+    margin: 0 auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), var(--glow-gold);
+    backdrop-filter: blur(12px);
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.forest-victory-card.visible {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}

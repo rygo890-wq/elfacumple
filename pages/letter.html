@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💌 La Carta Élfica — Aethelgard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400;1,600&family=Great+Vibes&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <link rel="stylesheet" href="../css/pages/letter.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+    <div class="forest-backdrop"></div>
+    <canvas id="particles-canvas" class="ambient-canvas"></canvas>
+    <div id="cursor-magic-light" class="cursor-light"></div>
+    <div class="mystic-fog-layer"></div>
+
+    <header class="hud-controls" aria-label="Controles">
+        <div></div>
+        <button id="music-toggle" class="music-toggle-btn" aria-label="Música">
+            <div class="music-wave-bars"><span></span><span></span><span></span></div>
+        </button>
+    </header>
+
+    <main class="letter-reward-page-wrapper">
+        <article class="parchment-reward-card">
+            <h1 id="letter-title" class="parchment-title-main">🌿 Feliz Cumpleaños, Xiaruno 🌿</h1>
+            <p class="parchment-subtitle-main">Un mensaje escrito con rocío estelar y bendiciones del bosque anciano</p>
+
+            <div id="letter-body" class="letter-full-text-body">
+                <p>
+                    Hoy el bosque entero celebra tu existencia. Las copas de los robles milenarios danzan al compás de una brisa cálida y los arroyos cantan la melodía más hermosa en tu honor.
+                </p>
+                <p>
+                    Has recorrido los senderos de la magia, despertado las runas ancestrales y confiado tus deseos a las estrellas. Que este nuevo ciclo que comienza esté colmado de aventuras extraordinarias, salud inquebrantable, amor sincero y esa luz radiante que solo tú sabes llevar a quienes te rodean.
+                </p>
+                <p>
+                    Recuerda que, sin importar a dónde te lleven tus pasos en este mundo, siempre habrá un pequeño rincón mágico esperándote en este bosque.
+                </p>
+            </div>
+
+            <div class="letter-final-signature">
+                Con todo mi cariño y admiración,<br>
+                <strong style="color: var(--color-gold-bright); font-family: var(--font-heading); font-size: 1.5rem; letter-spacing: 1.5px;">— Rygogamer</strong>
+            </div>
+        </article>
+
+        <div style="margin-top: 3rem;">
+            <button id="restart-adventure-btn" class="btn-nav-secondary">
+                🌿 Revivir la Aventura Élfica desde el Inicio
+            </button>
+        </div>
+    </main>
+
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <script type="module">
+        import { NavigationManager } from "../js/navigation.js";
+        import { ForestParticleEngine } from "../js/components/particles.js";
+        import { MusicManager } from "../js/components/music.js";
+        import { Storage } from "../js/utils/storage.js";
+        import { launchElvenConfetti } from "../js/utils/animations.js";
+        import { CONFIG } from "../js/config.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Protección estricta: debe haber completado la torta
+            const hasAccess = NavigationManager.checkAccess(Storage.STAGES.CAKE, "cake.html", Storage.STAGES.LETTER);
+            if (!hasAccess) return;
+
+            new ForestParticleEngine("particles-canvas");
+            new MusicManager(CONFIG);
+
+            // Personalizar nombre
+            const titleEl = document.getElementById("letter-title");
+            if (titleEl && CONFIG.nombre) {
+                titleEl.textContent = `🌿 Feliz Cumpleaños, ${CONFIG.nombre} 🌿`;
+            }
+
+            // Confeti de bienvenida a la carta
+            launchElvenConfetti();
+
+            // Reiniciar aventura
+            document.getElementById("restart-adventure-btn")?.addEventListener("click", () => {
+                Storage.resetAll();
+                window.location.href = "../index.html";
+            });
+
+            NavigationManager.initLinks();
+        });
+    </script>
+</body>
+</html>

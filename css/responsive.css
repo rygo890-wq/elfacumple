@@ -1,0 +1,226 @@
+/**
+ * 📱 RESPONSIVE & ADAPTABILIDAD MULTIDISPOSITIVO
+ */
+
+/* ==========================================================================
+   Tablets y Pantallas Medianas (<= 1024px)
+   ========================================================================== */
+@media (max-width: 1024px) {
+    .experience-wrapper {
+        padding: 5rem 1.2rem 3rem;
+    }
+
+    .gallery-grid-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .secrets-interactive-arena {
+        height: 340px;
+    }
+}
+
+/* ==========================================================================
+   Tablets Pequeñas y Móviles Grandes (<= 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+    .experience-wrapper {
+        padding: 4.5rem 1rem 3rem;
+    }
+
+    .scene-section {
+        min-height: auto;
+        padding: 1rem 0.2rem;
+    }
+
+    /* HUD en móviles */
+    .hud-controls {
+        top: 0.6rem;
+        padding: 0 0.8rem;
+    }
+
+    .elven-progress-tracker {
+        max-width: 60%;
+        overflow-x: auto;
+        gap: 0.25rem;
+        padding: 0.25rem 0.5rem;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .progress-step-node .step-name {
+        display: none;
+    }
+
+    .progress-step-node {
+        padding: 0.3rem 0.5rem;
+        font-size: 1rem;
+    }
+
+    .music-toggle-btn {
+        width: 38px;
+        height: 38px;
+    }
+
+    .secrets-hud-badge {
+        padding: 0.35rem 0.65rem;
+        font-size: 0.74rem;
+    }
+
+    /* Elfa Guía en móviles */
+    .elf-guide-container {
+        bottom: 0.8rem;
+        left: 0.8rem;
+    }
+
+    .elf-avatar-wrapper {
+        width: 55px;
+        height: 55px;
+    }
+
+    .elf-dialogue-bubble {
+        max-width: 180px;
+        font-size: 0.76rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    /* Puerta Élfica */
+    .gate-portal-container {
+        padding: 1.8rem 1rem;
+        border-radius: 28px;
+    }
+
+    .elven-gate-arch {
+        width: 160px;
+        height: 210px;
+    }
+
+    .runes-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+    }
+
+    .magic-rune-stone {
+        padding: 0.8rem 0.4rem;
+    }
+
+    .rune-symbol {
+        font-size: 1.7rem;
+    }
+
+    /* Pergamino */
+    .letter-desk-wrapper {
+        padding: 2rem 1rem;
+        border-radius: 20px;
+    }
+
+    .parchment-scroll {
+        padding: 1.8rem 1rem;
+    }
+
+    .desk-decorations {
+        top: 0.8rem;
+        right: 1rem;
+        gap: 0.6rem;
+    }
+
+    .letter-controls {
+        flex-direction: column;
+        gap: 1.2rem;
+    }
+
+    .chapter-dots-list {
+        order: 2;
+    }
+
+    /* Galería */
+    .gallery-grid-container {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-photo-img-wrapper {
+        height: 220px;
+    }
+
+    /* Arena de Secretos */
+    .secrets-interactive-arena {
+        height: 290px;
+    }
+
+    .secret-item-rune {
+        bottom: 12px;
+        left: 12px;
+        font-size: 1.7rem;
+    }
+
+    .secret-item-crystal {
+        font-size: 2rem;
+    }
+
+    .secret-item-flower {
+        bottom: 12px;
+        right: 12px;
+        font-size: 1.9rem;
+    }
+
+    /* Torta */
+    .cake-tier-top { width: 140px; height: 55px; }
+    .cake-tier-bottom { width: 210px; height: 75px; }
+    .cake-plate { width: 250px; height: 18px; }
+    .cake-candles-row { top: -38px; gap: 1.2rem; }
+    .cake-candle { width: 10px; height: 35px; }
+    .candle-flame { width: 13px; height: 20px; top: -20px; }
+
+    /* Navegación al pie */
+    .scene-navigation-footer {
+        gap: 0.8rem;
+        margin-top: 1.8rem;
+    }
+
+    .btn-nav-secondary {
+        font-size: 0.82rem;
+        padding: 0.6rem 1rem;
+    }
+}
+
+/* ==========================================================================
+   Móviles Compactos (<= 375px / 320px)
+   ========================================================================== */
+@media (max-width: 375px) {
+    .section-title {
+        font-size: 1.55rem;
+    }
+
+    .section-subtitle {
+        font-size: 0.92rem;
+    }
+
+    .btn-elven {
+        padding: 0.75rem 1.4rem;
+        font-size: 0.88rem;
+    }
+
+    .intro-moon-wrapper {
+        width: 95px;
+        height: 95px;
+    }
+
+    .magic-modal-card {
+        padding: 1.4rem 0.9rem;
+    }
+}
+
+/* ==========================================================================
+   Accesibilidad: Reducción de Movimiento
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .ambient-canvas {
+        display: none;
+    }
+}

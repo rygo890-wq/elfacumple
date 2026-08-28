@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚪 El Gran Portal Ancestral — Aethelgard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400;1,600&family=Great+Vibes&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <link rel="stylesheet" href="../css/pages/portal.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+    <div class="forest-backdrop"></div>
+    <canvas id="particles-canvas" class="ambient-canvas"></canvas>
+    <div id="cursor-magic-light" class="cursor-light"></div>
+    <div class="mystic-fog-layer"></div>
+
+    <header class="hud-controls" aria-label="Controles">
+        <div></div>
+        <button id="music-toggle" class="music-toggle-btn" aria-label="Música">
+            <div class="music-wave-bars"><span></span><span></span><span></span></div>
+        </button>
+    </header>
+
+    <main class="portal-page-wrapper">
+        <h1 class="section-title">🚪 El Gran Portal Ancestral 🚪</h1>
+        <p class="section-subtitle" style="max-width: 760px;">
+            "El arco de raíces custodia la palabra secreta. Tres runas permanecen grabadas en la piedra; <strong>completa los espacios vacíos</strong> para despertar el vórtice de luz."
+        </p>
+
+        <div class="portal-grand-arch-box" id="portal-main-box">
+            <!-- Inscripción arriba de la puerta -->
+            <div class="portal-door-header-phrase">
+                ✨ El par más perfecto del mundo ✨
+            </div>
+
+            <!-- Arco Visual Mágico -->
+            <div id="portal-arch-visual" class="portal-arch-visual">
+                <div class="portal-vortex-glow"></div>
+                <span style="font-size: 2.8rem; z-index: 2;">🗝️</span>
+            </div>
+
+            <!-- Visor de Palabra Formada (con letras H, O, S fijas e inmutables) -->
+            <div id="portal-slots-container" class="portal-word-display-container">
+                <!-- Generado dinámicamente con casillas -->
+            </div>
+
+            <p id="portal-status-label" class="portal-status-msg">
+                Toca las runas para completar las casillas vacías...
+            </p>
+
+            <!-- Teclado de Runas con todo el Alfabeto -->
+            <div class="portal-alphabet-keyboard" id="runes-keyboard">
+                <!-- Generado dinámicamente con las 26 letras y runas -->
+            </div>
+
+            <!-- Controles de Teclado -->
+            <div class="portal-keyboard-actions">
+                <button id="btn-backspace" class="btn-rune-action">⌫ Borrar</button>
+                <button id="btn-clear" class="btn-rune-action">🗑️ Limpiar</button>
+            </div>
+
+            <!-- Botón de avance hacia el pastel (Solo al completar la palabra) -->
+            <div id="cross-portal-action" style="display: none; margin-top: 2rem;">
+                <button class="btn-elven pulse-glow" data-goto="cake.html" data-transition="portal-flash" style="font-size: 1.15rem; padding: 1.1rem 2.8rem;">
+                    🎂 Atravesar el Portal hacia el Pastel ➔
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <script type="module">
+        import { NavigationManager } from "../js/navigation.js";
+        import { ForestParticleEngine } from "../js/components/particles.js";
+        import { MusicManager } from "../js/components/music.js";
+        import { Storage } from "../js/utils/storage.js";
+        import { burstSparks } from "../js/utils/dom.js";
+        import { playRuneSound, playPortalOpenSound } from "../js/utils/animations.js";
+        import { CONFIG } from "../js/config.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            NavigationManager.checkAccess(Storage.STAGES.PATH, "path.html", Storage.STAGES.PORTAL);
+
+            new ForestParticleEngine("particles-canvas");
+            new MusicManager(CONFIG);
+
+            // Alfabeto rúnico completo
+            const RUNIC_ALPHABET = [
+                { letter: "A", rune: "ᚨ" },
+                { letter: "B", rune: "ᛒ" },
+                { letter: "C", rune: "ᚲ" },
+                { letter: "D", rune: "ᛞ" },
+                { letter: "E", rune: "ᛖ" },
+                { letter: "F", rune: "ᚠ" },
+                { letter: "G", rune: "ᚷ" },
+                { letter: "H", rune: "ᚺ" },
+                { letter: "I", rune: "ᛁ" },
+                { letter: "J", rune: "ᛃ" },
+                { letter: "K", rune: "ᚴ" },
+                { letter: "L", rune: "ᛚ" },
+                { letter: "M", rune: "ᛗ" },
+                { letter: "N", rune: "ᚾ" },
+                { letter: "O", rune: "ᛟ" },
+                { letter: "P", rune: "ᛈ" },
+                { letter: "Q", rune: "ᛩ" },
+                { letter: "R", rune: "ᚱ" },
+                { letter: "S", rune: "ᛋ" },
+                { letter: "T", rune: "ᛏ" },
+                { letter: "U", rune: "ᚢ" },
+                { letter: "V", rune: "ᚡ" },
+                { letter: "W", rune: "ᚹ" },
+                { letter: "X", rune: "ᛪ" },
+                { letter: "Y", rune: "ᛦ" },
+                { letter: "Z", rune: "ᛉ" }
+            ];
+
+            // Palabra secreta: CHICHONAS (9 letras)
+            const TARGET_WORD = "CHICHONAS";
+
+            // Casillas fijas que NUNCA se pueden borrar ni cambiar:
+            // Pos 1: H, Pos 5: O, Pos 8: S
+            const FIXED_SLOTS = {
+                1: "H",
+                5: "O",
+                8: "S"
+            };
+
+            // Estado de las 9 casillas:
+            // null para vacías, o la letra asignada
+            let currentSlots = new Array(TARGET_WORD.length).fill(null);
+
+            // Inicializar las fijas
+            Object.keys(FIXED_SLOTS).forEach(idx => {
+                currentSlots[idx] = FIXED_SLOTS[idx];
+            });
+
+            let isUnlocked = false;
+
+            const keyboardEl = document.getElementById("runes-keyboard");
+            const slotsContainer = document.getElementById("portal-slots-container");
+            const statusLabel = document.getElementById("portal-status-label");
+            const arch = document.getElementById("portal-arch-visual");
+            const crossAction = document.getElementById("cross-portal-action");
+            const mainBox = document.getElementById("portal-main-box");
+
+            // Renderizar las casillas
+            function renderSlots() {
+                slotsContainer.innerHTML = "";
+                for (let i = 0; i < TARGET_WORD.length; i++) {
+                    const slot = document.createElement("div");
+                    slot.className = "rune-slot-box";
+
+                    const isFixed = FIXED_SLOTS.hasOwnProperty(i);
+                    const letter = currentSlots[i];
+
+                    if (isFixed) {
+                        // Casilla fija con candado permanente
+                        slot.classList.add("locked-slot");
+                        const item = RUNIC_ALPHABET.find(r => r.letter === letter) || { rune: letter, letter: letter };
+                        slot.innerHTML = `
+                            <span>${item.rune}</span>
+                            <span class="slot-subletter">${item.letter}</span>
+                        `;
+                    } else if (letter) {
+                        // Casilla llenada por el usuario
+                        slot.classList.add("filled");
+                        const item = RUNIC_ALPHABET.find(r => r.letter === letter) || { rune: letter, letter: letter };
+                        slot.innerHTML = `
+                            <span>${item.rune}</span>
+                            <span class="slot-subletter">${item.letter}</span>
+                        `;
+                    } else {
+                        // Casilla vacía disponible
+                        slot.innerHTML = `<span>_</span>`;
+                    }
+                    slotsContainer.appendChild(slot);
+                }
+            }
+
+            // Renderizar teclado de 26 runas
+            function renderKeyboard() {
+                keyboardEl.innerHTML = "";
+                RUNIC_ALPHABET.forEach(item => {
+                    const key = document.createElement("button");
+                    key.className = "portal-rune-key";
+                    key.innerHTML = `
+                        <span class="rune-symbol">${item.rune}</span>
+                        <span class="rune-letter">${item.letter}</span>
+                    `;
+
+                    key.addEventListener("click", (e) => {
+                        if (isUnlocked) return;
+
+                        // Buscar la primera casilla editable vacía
+                        const nextEmptyIndex = currentSlots.findIndex((val, idx) => !FIXED_SLOTS.hasOwnProperty(idx) && val === null);
+                        if (nextEmptyIndex === -1) return; // Todo lleno
+
+                        currentSlots[nextEmptyIndex] = item.letter;
+                        playRuneSound(item.letter.charCodeAt(0) * 8);
+                        burstSparks(e.clientX, e.clientY, 15, ["#fbbf24", "#10b981"]);
+                        renderSlots();
+                        checkWord();
+                    });
+
+                    keyboardEl.appendChild(key);
+                });
+            }
+
+            // Validar la palabra completa
+            function checkWord() {
+                const isFullyFilled = currentSlots.every(val => val !== null);
+                if (isFullyFilled) {
+                    const formedWord = currentSlots.join("");
+                    if (formedWord === TARGET_WORD) {
+                        // ¡Correcto!
+                        isUnlocked = true;
+                        arch.classList.add("unlocked");
+                        playPortalOpenSound();
+                        burstSparks(window.innerWidth / 2, window.innerHeight / 2, 50, ["#ffffff", "#67e8f9", "#fbbf24", "#10b981"]);
+
+                        statusLabel.textContent = `✨ ¡Las runas resuenan en perfecta armonía! El Gran Portal se ha abierto.`;
+                        statusLabel.style.color = "var(--color-gold-bright)";
+
+                        crossAction.style.display = "block";
+                        crossAction.classList.add("fadeInUp");
+                    } else {
+                        // Incorrecto
+                        mainBox.classList.add("portal-shake");
+                        setTimeout(() => mainBox.classList.remove("portal-shake"), 500);
+                        statusLabel.textContent = "Las runas no hallan resonancia... Prueba de nuevo.";
+
+                        // Limpiar solo las casillas editables tras breve pausa
+                        setTimeout(() => {
+                            clearEditableSlots();
+                            renderSlots();
+                        }, 900);
+                    }
+                }
+            }
+
+            function clearEditableSlots() {
+                for (let i = 0; i < TARGET_WORD.length; i++) {
+                    if (!FIXED_SLOTS.hasOwnProperty(i)) {
+                        currentSlots[i] = null;
+                    }
+                }
+            }
+
+            // Botón Borrar: borra la última casilla editable rellenada
+            document.getElementById("btn-backspace")?.addEventListener("click", () => {
+                if (isUnlocked) return;
+
+                // Buscar de derecha a izquierda la última casilla editable con valor
+                for (let i = TARGET_WORD.length - 1; i >= 0; i--) {
+                    if (!FIXED_SLOTS.hasOwnProperty(i) && currentSlots[i] !== null) {
+                        currentSlots[i] = null;
+                        renderSlots();
+                        break;
+                    }
+                }
+            });
+
+            // Botón Limpiar: limpia únicamente las casillas editables
+            document.getElementById("btn-clear")?.addEventListener("click", () => {
+                if (isUnlocked) return;
+                clearEditableSlots();
+                renderSlots();
+            });
+
+            renderSlots();
+            renderKeyboard();
+            NavigationManager.initLinks();
+        });
+    </script>
+</body>
+</html>

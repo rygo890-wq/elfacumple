@@ -1,0 +1,198 @@
+/**
+ * 🧝‍♀️ Estilos para pages/fairy.html (El Juicio de la Guardiana Lyra)
+ */
+
+.fairy-encounter-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    position: relative;
+    z-index: 20;
+}
+
+/* Retrato de la Elfa Lyra */
+.fairy-grand-portrait {
+    width: 135px;
+    height: 135px;
+    border-radius: 50%;
+    border: 3px solid var(--color-gold-magic);
+    box-shadow: var(--glow-gold), 0 0 50px rgba(16, 185, 129, 0.4);
+    overflow: hidden;
+    margin-bottom: 1.2rem;
+    animation: floatGentle 5s ease-in-out infinite;
+    background: radial-gradient(circle, #064e3b, #050e09);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.fairy-grand-portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.fairy-grand-portrait.blessed {
+    box-shadow: 0 0 35px #ffffff, 0 0 70px var(--color-gold-bright), 0 0 90px #10b981;
+    border-color: #ffffff;
+}
+
+/* Fila de las 3 Gemas de Poder */
+.fairy-gems-row {
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.fairy-power-gem {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(6, 78, 59, 0.5);
+    border: 1.5px solid rgba(251, 191, 36, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.3);
+    filter: grayscale(1);
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fairy-power-gem.lit {
+    background: radial-gradient(circle, #ffffff 0%, #67e8f9 40%, #10b981 100%);
+    border-color: var(--color-gold-bright);
+    color: #ffffff;
+    filter: grayscale(0);
+    box-shadow: 0 0 20px #67e8f9, 0 0 35px var(--color-gold-magic);
+    transform: scale(1.15);
+    animation: goldPulse 2s infinite ease-in-out;
+}
+
+/* Cuadro de Diálogo de la Elfa */
+.fairy-dialogue-box {
+    background: rgba(11, 26, 18, 0.92);
+    border: 1.5px solid var(--color-gold-magic);
+    border-radius: 24px;
+    padding: 1.6rem 2.2rem;
+    max-width: 720px;
+    margin-bottom: 1.8rem;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.7), var(--glow-gold);
+    backdrop-filter: blur(12px);
+    transition: border-color 0.3s ease;
+}
+
+.fairy-speech-text {
+    font-family: var(--font-subheading);
+    font-size: 1.22rem;
+    color: var(--color-parchment-bg);
+    line-height: 1.8;
+    font-style: italic;
+    margin: 0;
+}
+
+/* Tarjeta del Juicio y Preguntas */
+.trial-card-container {
+    width: 100%;
+    max-width: 760px;
+    background: radial-gradient(circle at center, rgba(16, 35, 25, 0.94) 0%, rgba(6, 14, 9, 0.98) 100%);
+    border: 1.5px solid rgba(251, 191, 36, 0.4);
+    border-radius: 28px;
+    padding: 2.2rem 2.5rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
+    animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.trial-question-title {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    color: var(--color-gold-bright);
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+}
+
+.trial-riddle-quote {
+    font-family: var(--font-subheading);
+    font-size: 1.3rem;
+    color: var(--color-forest-glow);
+    font-style: italic;
+    line-height: 1.8;
+    margin-bottom: 1.8rem;
+}
+
+/* Opciones de Respuesta */
+.trial-options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    width: 100%;
+}
+
+.trial-option-btn {
+    background: rgba(6, 78, 59, 0.45);
+    border: 1.5px solid rgba(251, 191, 36, 0.35);
+    border-radius: 16px;
+    padding: 1.1rem 1.6rem;
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    color: var(--color-parchment-bg);
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
+}
+
+.trial-option-btn:hover {
+    transform: translateX(6px);
+    background: rgba(16, 185, 129, 0.35);
+    border-color: var(--color-gold-bright);
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+    color: #ffffff;
+}
+
+.trial-option-btn:active {
+    transform: scale(0.98);
+}
+
+.trial-option-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(251, 191, 36, 0.2);
+    border: 1px solid var(--color-gold-magic);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    color: var(--color-gold-bright);
+    flex-shrink: 0;
+}
+
+/* Botón de Éxito Final */
+.trial-completion-box {
+    margin-top: 2rem;
+    display: none;
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Vibración de Error */
+.trial-card-container.shake-trial {
+    animation: shakeContainer 0.5s ease-in-out;
+    border-color: #ef4444 !important;
+}
+
+@keyframes shakeContainer {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+}

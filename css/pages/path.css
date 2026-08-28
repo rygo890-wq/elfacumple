@@ -1,0 +1,208 @@
+/**
+ * 🍃 Estilos para pages/path.html (El Enigma del Sendero Élfico)
+ */
+
+.path-adventure-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 3rem 1.5rem;
+    position: relative;
+    z-index: 20;
+}
+
+/* Tarjeta del Pergamino con el Enigma Continuo */
+.elven-riddle-card {
+    background: radial-gradient(circle at center, rgba(16, 35, 25, 0.95) 0%, rgba(6, 14, 9, 0.98) 100%);
+    border: 1.5px solid rgba(251, 191, 36, 0.45);
+    border-radius: 24px;
+    padding: 2.2rem 2.8rem;
+    max-width: 860px;
+    margin: 1rem auto 1.5rem;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.8), var(--glow-gold);
+    backdrop-filter: blur(12px);
+}
+
+.riddle-intro-verse {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    color: var(--color-gold-bright);
+    letter-spacing: 1px;
+    margin-bottom: 1.2rem;
+    text-align: center;
+    border-bottom: 1px dashed rgba(251, 191, 36, 0.3);
+    padding-bottom: 0.8rem;
+}
+
+.riddle-single-poem {
+    font-family: var(--font-subheading);
+    font-size: 1.22rem;
+    color: var(--color-parchment-bg);
+    line-height: 2;
+    font-style: italic;
+    text-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
+    margin: 0;
+    text-align: center;
+}
+
+.riddle-single-poem p {
+    margin: 0 0 0.85rem 0;
+}
+
+.riddle-single-poem p:last-child {
+    margin-bottom: 0;
+}
+
+/* Arena del Sendero con los 10 Elementos */
+.path-trail-container {
+    position: relative;
+    width: 100%;
+    max-width: 920px;
+    height: 420px;
+    background: radial-gradient(circle, rgba(11, 26, 18, 0.88) 0%, rgba(4, 10, 6, 0.98) 100%);
+    border: 2px dashed rgba(251, 191, 36, 0.35);
+    border-radius: 32px;
+    margin: 1rem auto;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(16, 185, 129, 0.15);
+    transition: border-color 0.3s ease;
+}
+
+.trail-hint {
+    position: absolute;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-subheading);
+    color: var(--color-forest-glow);
+    font-style: italic;
+    font-size: 1.05rem;
+    pointer-events: none;
+    transition: color 0.3s ease;
+    width: 90%;
+    text-align: center;
+}
+
+.path-interact-item {
+    position: absolute;
+    cursor: pointer;
+    transition: filter 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+    user-select: none;
+}
+
+.path-interact-item:hover {
+    filter: drop-shadow(0 0 15px var(--color-gold-magic));
+}
+
+/* Posiciones de los 10 Elementos */
+.path-item-flower {
+    bottom: 25%;
+    left: 18%;
+    font-size: 2.8rem;
+    filter: drop-shadow(0 0 10px rgba(244, 114, 182, 0.6));
+}
+
+.path-item-butterfly {
+    top: 22%;
+    left: 52%;
+    font-size: 2.6rem;
+    filter: drop-shadow(0 0 10px rgba(103, 232, 249, 0.6));
+    animation: floatGentle 3s ease-in-out infinite alternate;
+}
+
+.path-item-crystal {
+    top: 22%;
+    left: 20%;
+    font-size: 2.6rem;
+    filter: drop-shadow(0 0 10px var(--color-lunar-cyan));
+    animation: floatGentle 4.5s ease-in-out infinite;
+}
+
+.path-item-mushroom {
+    bottom: 22%;
+    right: 22%;
+    font-size: 2.7rem;
+    filter: drop-shadow(0 0 10px rgba(52, 211, 153, 0.7));
+}
+
+.path-item-rune {
+    top: 45%;
+    right: 12%;
+    font-size: 2.8rem;
+    color: var(--color-gold-bright);
+    text-shadow: 0 0 15px var(--color-gold-magic), 0 0 30px rgba(251, 191, 36, 0.7);
+    filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.85)) drop-shadow(0 0 25px rgba(16, 185, 129, 0.5));
+    animation: floatGentle 4s ease-in-out infinite;
+}
+
+.path-item-leaf {
+    top: 50%;
+    left: 36%;
+    font-size: 2.4rem;
+    filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.5));
+    animation: floatGentle 3.5s ease-in-out infinite alternate;
+}
+
+.path-item-dew {
+    bottom: 30%;
+    left: 60%;
+    font-size: 2.3rem;
+    filter: drop-shadow(0 0 8px #93c5fd);
+}
+
+.path-item-moonstone {
+    top: 18%;
+    right: 20%;
+    font-size: 2.4rem;
+    filter: drop-shadow(0 0 10px #e0e7ff);
+    animation: floatGentle 5s ease-in-out infinite;
+}
+
+.path-item-quill {
+    bottom: 18%;
+    left: 42%;
+    font-size: 2.4rem;
+    filter: drop-shadow(0 0 8px #c084fc);
+}
+
+.path-item-seed {
+    top: 52%;
+    left: 6%;
+    font-size: 2.3rem;
+    filter: drop-shadow(0 0 8px #d97706);
+}
+
+/* Activación Paso a Paso */
+.path-interact-item.step-activated {
+    filter: drop-shadow(0 0 20px #ffffff) drop-shadow(0 0 35px var(--color-gold-bright)) !important;
+    color: var(--color-gold-bright) !important;
+}
+
+.path-status-text {
+    font-family: var(--font-subheading);
+    font-size: 1.15rem;
+    color: var(--color-forest-glow);
+    font-style: italic;
+    margin-top: 0.5rem;
+}
+
+.path-completion-action {
+    margin-top: 1.5rem;
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Vibración suave en error */
+.puzzle-shake {
+    animation: shakeContainer 0.5s ease-in-out;
+    border-color: #ef4444 !important;
+}
+
+@keyframes shakeContainer {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+}

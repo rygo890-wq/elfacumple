@@ -1,0 +1,494 @@
+/**
+ * 🌿 ESTILOS PRINCIPALES & SISTEMA DE DISEÑO — CARTA ÉLFICA
+ */
+
+/* ==========================================================================
+   Variables y Tokens de Diseño
+   ========================================================================== */
+:root {
+    /* Paleta Visual Élfica */
+    --color-bg-deep: #050e09;
+    --color-bg-forest: #0b1a12;
+    --color-bg-night: #060b14;
+    --color-forest-emerald: #10b981;
+    --color-forest-glow: #34d399;
+    --color-forest-moss: #064e3b;
+    
+    --color-gold-magic: #fbbf24;
+    --color-gold-bright: #fef08a;
+    --color-gold-dark: #b45309;
+    
+    --color-parchment-bg: #fbf5e6;
+    --color-parchment-text: #291809;
+    --color-parchment-border: #d4b28c;
+    
+    --color-mystic-violet: #c084fc;
+    --color-lunar-cyan: #67e8f9;
+    --color-text-light: #f3f4f6;
+    --color-text-muted: #9ca3af;
+
+    /* Tipografía */
+    --font-heading: 'Cinzel Decorative', 'Cinzel', serif;
+    --font-subheading: 'Cormorant Garamond', serif;
+    --font-script: 'Great Vibes', cursive;
+    --font-body: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+    /* Sombras & Resplandores */
+    --glow-gold: 0 0 15px rgba(251, 191, 36, 0.6), 0 0 30px rgba(251, 191, 36, 0.3);
+    --glow-emerald: 0 0 15px rgba(16, 185, 129, 0.6), 0 0 35px rgba(16, 185, 129, 0.3);
+    --glow-cyan: 0 0 15px rgba(103, 232, 249, 0.6), 0 0 30px rgba(103, 232, 249, 0.3);
+    --shadow-parchment: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(212, 178, 140, 0.2);
+
+    /* Transiciones */
+    --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* Z-Index */
+    --z-bg: 0;
+    --z-canvas: 10;
+    --z-content: 20;
+    --z-hud: 100;
+    --z-guide: 200;
+    --z-modal: 500;
+    --z-sparks: 999;
+}
+
+/* ==========================================================================
+   Reset y Estilos Base
+   ========================================================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    background-color: var(--color-bg-deep);
+    color: var(--color-text-light);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+body {
+    min-height: 100vh;
+    background: radial-gradient(circle at 50% 20%, #0d281e 0%, var(--color-bg-deep) 70%, var(--color-bg-night) 100%);
+    background-attachment: fixed;
+    color: var(--color-text-light);
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Fondo con imagen del bosque encantado */
+.forest-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('../assets/images/background/forest-bg.jpg');
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    opacity: 0.38;
+    z-index: var(--z-bg);
+    pointer-events: none;
+    transition: opacity 1s ease;
+}
+
+/* Canvas de partículas de fondo */
+.ambient-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: var(--z-canvas);
+    pointer-events: none;
+}
+
+/* Seguidor de iluminación del cursor */
+.cursor-light {
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, rgba(251, 191, 36, 0.04) 40%, transparent 70%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 15;
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+/* Niebla ambiental animada */
+.mystic-fog-layer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 200%;
+    height: 35vh;
+    background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.08) 0%, rgba(6, 78, 59, 0.04) 50%, transparent 80%);
+    pointer-events: none;
+    z-index: 5;
+    animation: driftFog 25s infinite linear alternate;
+}
+
+/* ==========================================================================
+   Contenedor Principal y Escenas Individuales
+   ========================================================================== */
+.experience-wrapper {
+    position: relative;
+    z-index: var(--z-content);
+    width: 100%;
+    max-width: 1100px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 6rem 1.5rem 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.scene-section {
+    position: relative;
+    width: 100%;
+    min-height: 75vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem 0.5rem;
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scene-section.active-scene {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.scene-section.leaving-scene {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.96);
+}
+
+/* Navegación al pie de cada escena */
+.scene-navigation-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+    width: 100%;
+}
+
+.btn-nav-secondary {
+    background: transparent;
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    color: var(--color-forest-glow);
+    font-family: var(--font-heading);
+    font-size: 0.92rem;
+    padding: 0.75rem 1.4rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: var(--transition-smooth);
+}
+
+.btn-nav-secondary:hover {
+    background: rgba(6, 78, 59, 0.4);
+    border-color: var(--color-gold-magic);
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+}
+
+/* Tipografía de Encabezados */
+.section-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    color: var(--color-gold-magic);
+    text-shadow: var(--glow-gold);
+    margin-bottom: 0.6rem;
+    letter-spacing: 2px;
+}
+
+.section-subtitle {
+    font-family: var(--font-subheading);
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
+    color: var(--color-forest-glow);
+    max-width: 680px;
+    margin: 0 auto 2rem;
+    font-style: italic;
+}
+
+/* ==========================================================================
+   Botones Élficos y Controles
+   ========================================================================== */
+.btn-elven {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.9rem 2.2rem;
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    letter-spacing: 1.5px;
+    color: #ffffff;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(6, 78, 59, 0.6) 100%);
+    border: 1.5px solid var(--color-gold-magic);
+    border-radius: 9999px;
+    cursor: pointer;
+    box-shadow: var(--glow-gold), inset 0 0 15px rgba(251, 191, 36, 0.2);
+    backdrop-filter: blur(8px);
+    transition: var(--transition-bounce);
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+}
+
+.btn-elven:hover {
+    transform: translateY(-3px) scale(1.03);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.5) 0%, rgba(251, 191, 36, 0.3) 100%);
+    box-shadow: 0 0 25px rgba(251, 191, 36, 0.8), 0 0 45px rgba(16, 185, 129, 0.5);
+    border-color: var(--color-gold-bright);
+}
+
+.btn-elven:active {
+    transform: translateY(1px) scale(0.98);
+}
+
+/* ==========================================================================
+   HUD Flotante (Barra de Progreso, Secretos & Música)
+   ========================================================================== */
+.hud-controls {
+    position: fixed;
+    top: 1rem;
+    left: 0;
+    right: 0;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: var(--z-hud);
+    pointer-events: none;
+}
+
+.hud-controls > * {
+    pointer-events: auto;
+}
+
+/* Barra de Progreso Élfica */
+.elven-progress-tracker {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(11, 26, 18, 0.85);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.progress-step-node {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    padding: 0.25rem 0.55rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.progress-step-node.unlocked {
+    color: var(--color-forest-glow);
+}
+
+.progress-step-node.active {
+    background: rgba(16, 185, 129, 0.3);
+    border: 1px solid var(--color-gold-magic);
+    color: var(--color-gold-bright);
+    box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+}
+
+.progress-step-node.locked {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.hud-right-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+/* Botón de Música */
+.music-toggle-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(11, 26, 18, 0.85);
+    border: 1.5px solid var(--color-gold-magic);
+    color: var(--color-gold-magic);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    box-shadow: var(--glow-gold);
+    transition: var(--transition-bounce);
+}
+
+.music-toggle-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px rgba(251, 191, 36, 0.8);
+}
+
+.music-toggle-btn.playing {
+    border-color: var(--color-forest-emerald);
+    color: var(--color-forest-glow);
+    box-shadow: var(--glow-emerald);
+}
+
+.music-wave-bars {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 16px;
+}
+
+.music-wave-bars span {
+    width: 3px;
+    height: 4px;
+    background-color: currentColor;
+    border-radius: 2px;
+    transition: height 0.2s ease;
+}
+
+.music-toggle-btn.playing .music-wave-bars span:nth-child(1) { animation: waveBar 0.8s infinite ease-in-out alternate; }
+.music-toggle-btn.playing .music-wave-bars span:nth-child(2) { animation: waveBar 0.6s infinite ease-in-out alternate 0.2s; }
+.music-toggle-btn.playing .music-wave-bars span:nth-child(3) { animation: waveBar 0.9s infinite ease-in-out alternate 0.4s; }
+
+/* Badge Contador de Secretos (Deshabilitado) */
+.secrets-hud-badge {
+    display: none !important;
+}
+
+/* ==========================================================================
+   Toasts de Notificación Mágica (Deshabilitados)
+   ========================================================================== */
+.toast-container {
+    display: none !important;
+}
+
+.magic-toast {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.4rem;
+    background: rgba(11, 26, 18, 0.92);
+    border: 1px solid var(--color-gold-magic);
+    border-radius: 9999px;
+    color: #ffffff;
+    font-size: 0.95rem;
+    box-shadow: var(--glow-gold), 0 10px 30px rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(12px);
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.magic-toast.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* ==========================================================================
+   Chispas y Partículas DOM
+   ========================================================================== */
+.magic-sparkle-dot {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: var(--z-sparks);
+    animation: flySpark 0.9s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* ==========================================================================
+   Elfa Guía (Lyra)
+   ========================================================================== */
+.elf-guide-container {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+    z-index: var(--z-guide);
+    opacity: 0;
+    transform: translateY(30px);
+    pointer-events: none;
+    transition: var(--transition-smooth);
+}
+
+.elf-guide-container.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.elf-avatar-wrapper {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    border: 2px solid var(--color-gold-magic);
+    box-shadow: var(--glow-gold);
+    overflow: hidden;
+    cursor: pointer;
+    background: radial-gradient(circle, #064e3b, #050e09);
+    animation: floatGentle 4s ease-in-out infinite;
+    transition: var(--transition-bounce);
+}
+
+.elf-avatar-wrapper:hover {
+    transform: scale(1.12);
+}
+
+.elf-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.elf-dialogue-bubble {
+    background: rgba(11, 26, 18, 0.92);
+    border: 1px solid var(--color-gold-magic);
+    border-radius: 18px 18px 18px 4px;
+    padding: 0.75rem 1.1rem;
+    max-width: 250px;
+    font-size: 0.88rem;
+    color: var(--color-parchment-bg);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), var(--glow-gold);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transform: scale(0.9);
+    transition: var(--transition-smooth);
+    pointer-events: none;
+}
+
+.elf-dialogue-bubble.visible {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}

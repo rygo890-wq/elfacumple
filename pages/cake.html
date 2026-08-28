@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎂 El Ritual del Pastel Élfico — Aethelgard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400;1,600&family=Great+Vibes&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <link rel="stylesheet" href="../css/pages/cake.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+    <div class="forest-backdrop"></div>
+    <canvas id="particles-canvas" class="ambient-canvas"></canvas>
+    <div id="cursor-magic-light" class="cursor-light"></div>
+    <div class="mystic-fog-layer"></div>
+
+    <header class="hud-controls" aria-label="Controles">
+        <div></div>
+        <button id="music-toggle" class="music-toggle-btn" aria-label="Música">
+            <div class="music-wave-bars"><span></span><span></span><span></span></div>
+        </button>
+    </header>
+
+    <main class="cake-page-wrapper">
+        <h1 class="section-title">🎂 El Manjar de las Hadas 🎂</h1>
+        
+        <p id="cake-instruction" style="font-family: var(--font-subheading); font-size: 1.3rem; color: var(--color-gold-bright); font-style: italic; margin-bottom: 2rem; max-width: 760px;">
+            "Detén la barra de precisión en el centro dorado para apagar las 5 velas de un solo soplido."
+        </p>
+
+        <!-- Pastel con las 5 Velas -->
+        <div class="elven-cake-scene-box">
+            <div class="cake-structure">
+                <!-- 5 Velas Élficas -->
+                <div class="cake-candles-row" id="candles-container">
+                    <div class="cake-candle" id="candle-1">
+                        <div class="candle-wick"></div>
+                        <div class="candle-flame"></div>
+                        <div class="candle-smoke"></div>
+                    </div>
+                    <div class="cake-candle" id="candle-2">
+                        <div class="candle-wick"></div>
+                        <div class="candle-flame"></div>
+                        <div class="candle-smoke"></div>
+                    </div>
+                    <div class="cake-candle" id="candle-3">
+                        <div class="candle-wick"></div>
+                        <div class="candle-flame"></div>
+                        <div class="candle-smoke"></div>
+                    </div>
+                    <div class="cake-candle" id="candle-4">
+                        <div class="candle-wick"></div>
+                        <div class="candle-flame"></div>
+                        <div class="candle-smoke"></div>
+                    </div>
+                    <div class="cake-candle" id="candle-5">
+                        <div class="candle-wick"></div>
+                        <div class="candle-flame"></div>
+                        <div class="candle-smoke"></div>
+                    </div>
+                </div>
+
+                <!-- Pisos del Pastel -->
+                <div class="cake-tier cake-tier-top"></div>
+                <div class="cake-tier cake-tier-bottom"></div>
+                <div class="cake-plate"></div>
+            </div>
+        </div>
+
+        <!-- Barra de Precisión (Skill Check Bar) -->
+        <div class="skill-check-wrapper" id="skill-check-box">
+            <div class="skill-check-track">
+                <!-- Zona Cercana (Parcial) -->
+                <div class="skill-zone-near"></div>
+                <!-- Zona Perfecta (Centro) -->
+                <div class="skill-zone-perfect"></div>
+                <!-- Aguja / Indicador móvil -->
+                <div class="skill-needle-indicator" id="skill-needle"></div>
+            </div>
+
+            <button id="btn-blow" class="btn-blow-candle">
+                🌬️ SOPLAR LAS VELAS
+            </button>
+        </div>
+
+        <!-- Caja de Ritual Completado -->
+        <div id="cake-ritual-completion" class="cake-ritual-completion-box">
+            <h2 class="section-title" style="color: var(--color-gold-bright); font-size: 2rem; margin-bottom: 1rem;">
+                ✨ ¡Has apagado todas las velas! ✨
+            </h2>
+            <p style="font-family: var(--font-subheading); font-size: 1.35rem; color: var(--color-forest-glow); font-style: italic; margin-bottom: 2rem; line-height: 1.8;">
+                "Tu deseo ha sido elevado a las estrellas más altas de Aethelgard. Ahora puedes abrir tu gran regalo."
+            </p>
+            <button id="open-gift-btn" class="btn-elven" data-goto="letter.html" data-transition="portal-flash" style="font-size: 1.2rem; padding: 1.1rem 2.8rem;">
+                💌 ABRIR EL REGALO ➔
+            </button>
+        </div>
+    </main>
+
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <script type="module">
+        import { NavigationManager } from "../js/navigation.js";
+        import { ForestParticleEngine } from "../js/components/particles.js";
+        import { MusicManager } from "../js/components/music.js";
+        import { Storage } from "../js/utils/storage.js";
+        import { burstSparks } from "../js/utils/dom.js";
+        import { playChimeSound, playPortalOpenSound } from "../js/utils/animations.js";
+        import { CONFIG } from "../js/config.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            NavigationManager.checkAccess(Storage.STAGES.PORTAL, "portal.html", Storage.STAGES.CAKE);
+
+            new ForestParticleEngine("particles-canvas");
+            new MusicManager(CONFIG);
+
+            const needle = document.getElementById("skill-needle");
+            const blowBtn = document.getElementById("btn-blow");
+            const instruction = document.getElementById("cake-instruction");
+            const skillBox = document.getElementById("skill-check-box");
+            const completionBox = document.getElementById("cake-ritual-completion");
+
+            const candles = [
+                document.getElementById("candle-1"),
+                document.getElementById("candle-2"),
+                document.getElementById("candle-3"),
+                document.getElementById("candle-4"),
+                document.getElementById("candle-5")
+            ];
+
+            let needlePos = 0; // 0 a 100 (%)
+            let speed = 1.35; // velocidad de oscilación
+            let direction = 1; // 1 = der, -1 = izq
+            let isRunning = true;
+            let isCompleted = false;
+
+            // Loop de animación de la aguja
+            function updateNeedle() {
+                if (isRunning && !isCompleted) {
+                    needlePos += speed * direction;
+
+                    if (needlePos >= 100) {
+                        needlePos = 100;
+                        direction = -1;
+                    } else if (needlePos <= 0) {
+                        needlePos = 0;
+                        direction = 1;
+                    }
+
+                    needle.style.left = `${needlePos}%`;
+                }
+
+                if (!isCompleted) {
+                    requestAnimationFrame(updateNeedle);
+                }
+            }
+
+            requestAnimationFrame(updateNeedle);
+
+            // Apagar velas según cantidad
+            function extinguishCandles(count) {
+                candles.forEach((candle, idx) => {
+                    const flame = candle.querySelector(".candle-flame");
+                    const smoke = candle.querySelector(".candle-smoke");
+
+                    if (idx < count) {
+                        flame.classList.add("extinguished");
+                        smoke.classList.add("rising");
+                    } else {
+                        flame.classList.remove("extinguished");
+                        smoke.classList.remove("rising");
+                    }
+                });
+            }
+
+            // Reencender todas las velas
+            function relightAllCandles() {
+                candles.forEach(candle => {
+                    const flame = candle.querySelector(".candle-flame");
+                    const smoke = candle.querySelector(".candle-smoke");
+                    flame.classList.remove("extinguished");
+                    smoke.classList.remove("rising");
+                });
+            }
+
+            // Al hacer clic en Soplar
+            blowBtn?.addEventListener("click", () => {
+                if (!isRunning || isCompleted) return;
+
+                isRunning = false;
+                blowBtn.disabled = true;
+
+                // Calcular distancia al centro perfecto (50%)
+                const currentPos = needlePos;
+                const distanceToCenter = Math.abs(currentPos - 50);
+
+                let candlesExtinguished = 0;
+
+                if (distanceToCenter <= 5.5) {
+                    // ¡ZONA PERFECTA! Apaga las 5
+                    candlesExtinguished = 5;
+                } else if (distanceToCenter <= 14) {
+                    // Zona muy cercana: Apaga 4
+                    candlesExtinguished = 4;
+                } else if (distanceToCenter <= 26) {
+                    // Zona media: Apaga 2
+                    candlesExtinguished = 2;
+                } else {
+                    // Muy lejos: Apaga 1
+                    candlesExtinguished = 1;
+                }
+
+                extinguishCandles(candlesExtinguished);
+
+                if (candlesExtinguished === 5) {
+                    // ¡ÉXITO TOTAL!
+                    isCompleted = true;
+                    playPortalOpenSound();
+                    document.body.classList.add("ritual-complete-darkness");
+                    burstSparks(window.innerWidth / 2, window.innerHeight / 2, 60, ["#ffffff", "#fef08a", "#fbbf24", "#10b981"]);
+
+                    instruction.innerHTML = `<span style="color: var(--color-gold-bright);">✨ ¡Soplido perfecto! Has apagado las 5 velas del bosque.</span>`;
+                    skillBox.style.display = "none";
+
+                    setTimeout(() => {
+                        completionBox.classList.add("visible");
+                    }, 800);
+                } else {
+                    // FALLO PARCIAL: Mensaje y reinicio
+                    playChimeSound(280, 0.6, "sawtooth");
+                    burstSparks(window.innerWidth / 2, window.innerHeight * 0.45, 15, ["#94a3b8", "#cbd5e1"]);
+
+                    instruction.innerHTML = `
+                        <span style="color: #f87171;">
+                            💨 ¡Apagaste ${candlesExtinguished} de 5 velas! Inténtalo de nuevo, sopla más fuerte y con más precisión...
+                        </span>
+                    `;
+
+                    // Reencendido y reinicio de la barra tras 1.8 segundos
+                    setTimeout(() => {
+                        relightAllCandles();
+                        playChimeSound(600, 0.5, "sine");
+                        instruction.textContent = "Detén la barra de precisión en el centro dorado para apagar las 5 velas de un solo soplido.";
+                        isRunning = true;
+                        blowBtn.disabled = false;
+                    }, 1800);
+                }
+            });
+
+            // Al hacer clic en abrir regalo
+            document.getElementById("open-gift-btn")?.addEventListener("click", () => {
+                Storage.setStage(Storage.STAGES.CAKE, "true");
+                Storage.setStage(Storage.STAGES.LETTER, "true");
+            });
+
+            NavigationManager.initLinks();
+        });
+    </script>
+</body>
+</html>

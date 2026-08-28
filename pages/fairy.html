@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧝‍♀️ El Juicio de la Guardiana — Aethelgard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400;1,600&family=Great+Vibes&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <link rel="stylesheet" href="../css/pages/fairy.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+    <div class="forest-backdrop"></div>
+    <canvas id="particles-canvas" class="ambient-canvas"></canvas>
+    <div id="cursor-magic-light" class="cursor-light"></div>
+    <div class="mystic-fog-layer"></div>
+
+    <header class="hud-controls" aria-label="Controles">
+        <div></div>
+        <button id="music-toggle" class="music-toggle-btn" aria-label="Música">
+            <div class="music-wave-bars"><span></span><span></span><span></span></div>
+        </button>
+    </header>
+
+    <main class="fairy-encounter-wrapper">
+        <h1 class="section-title" style="margin-bottom: 1.2rem;">🧝‍♀️ El Juicio de la Guardiana 🧝‍♀️</h1>
+
+        <!-- Fila de las 4 Gemas de Poder -->
+        <div class="fairy-gems-row">
+            <div class="fairy-power-gem" id="gem-1" title="Primera Gema de Sabiduría">💎</div>
+            <div class="fairy-power-gem" id="gem-2" title="Segunda Gema de Luz">💎</div>
+            <div class="fairy-power-gem" id="gem-3" title="Tercera Gema de Tiempo">💎</div>
+            <div class="fairy-power-gem" id="gem-4" title="Cuarta Gema de Celebración">💎</div>
+        </div>
+
+        <!-- Diálogo de la Elfa -->
+        <div class="fairy-dialogue-box">
+            <p id="fairy-dialogue" class="fairy-speech-text">
+                "Has seguido a mi luciérnaga hasta aquí... Pero antes de confiarte el sendero sagrado, debes superar mis cuatro enigmas. Si fallas uno solo, la niebla borrará tus pasos y volverás al inicio."
+            </p>
+        </div>
+
+        <!-- Tarjeta Interactiva del Juicio -->
+        <div class="trial-card-container" id="trial-card">
+            <h3 class="trial-question-title" id="trial-step-label">✨ Enigma I de IV</h3>
+            <p class="trial-riddle-quote" id="trial-question-text">
+                Cargando enigma...
+            </p>
+
+            <div class="trial-options-grid" id="trial-options-container">
+                <!-- Opciones generadas dinámicamente -->
+            </div>
+        </div>
+
+        <!-- Botón de éxito final al completar las 4 gemas -->
+        <div class="trial-completion-box" id="trial-completion-box">
+            <button class="btn-elven pulse-glow" data-goto="path.html" data-transition="fade" style="font-size: 1.15rem; padding: 1.1rem 2.8rem;">
+                🍃 Avanzar al Sendero de las Maravillas ➔
+            </button>
+        </div>
+    </main>
+
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <script type="module">
+        import { NavigationManager } from "../js/navigation.js";
+        import { ForestParticleEngine } from "../js/components/particles.js";
+        import { MusicManager } from "../js/components/music.js";
+        import { Storage } from "../js/utils/storage.js";
+        import { burstSparks } from "../js/utils/dom.js";
+        import { playChimeSound, playPortalOpenSound } from "../js/utils/animations.js";
+        import { CONFIG } from "../js/config.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            NavigationManager.checkAccess(Storage.STAGES.FOREST, "forest.html", Storage.STAGES.FAIRY);
+
+            new ForestParticleEngine("particles-canvas");
+            new MusicManager(CONFIG);
+
+            const recipientName = CONFIG.nombre || "Xiaruno";
+
+            // Los 4 Enigmas del Juicio (Trivia Especial)
+            const TRIALS = [
+                {
+                    title: "✨ Enigma I de IV — El Protagonista Compartido",
+                    question: "«Soy el protagonista que sobrevivió al terror de Louisiana y regresé para enfrentar nuevos horrores en un pueblo europeo. Mi historia conecta ambos juegos, aunque mi edad avanzó entre ellos. ¿Quién soy?»",
+                    options: [
+                        { text: "Chris Redfield", correct: false },
+                        { text: "Leon S. Kennedy", correct: false },
+                        { text: "Ethan Winters", correct: true },
+                        { text: "Albert Wesker", correct: false }
+                    ],
+                    reaction: `"¡Exacto! Ethan Winters, quien lo arriesgó todo por su familia."`
+                },
+                {
+                    title: "✨ Enigma II de IV — La Antagonista Oculta",
+                    question: "«En Resident Evil 7, parecía solo una niña inocente rescatada, pero en realidad era la fuente de todos los horrores. Controlaba a la familia Baker con mi poder biológico. ¿Qué personaje es?»",
+                    options: [
+                        { text: "Mia Winters", correct: false },
+                        { text: "Eveline", correct: true },
+                        { text: "Zoe Baker", correct: false },
+                        { text: "Marguerite Baker", correct: false }
+                    ],
+                    reaction: `"Sabia respuesta. Eveline (E-001), el origen de la pesadilla biológica."`
+                },
+                {
+                    title: "✨ Enigma III de IV — El Sacrificio Revelador",
+                    question: "«Mi historia culmina en Resident Evil 8 con un twist impactante: en realidad había muerto al comienzo de Resident Evil 7 y sobreviví como un mutante. Mi final implicó explotarme junto a la Megamiceta para salvar a mi familia. ¿De quién hablo?»",
+                    options: [
+                        { text: "Karl Heisenberg", correct: false },
+                        { text: "Ethan Winters", correct: true },
+                        { text: "Chris Redfield", correct: false },
+                        { text: "Mother Miranda", correct: false }
+                    ],
+                    reaction: `"Impresionante. El sacrificio final de Ethan nunca será olvidado."`
+                },
+                {
+                    title: "✨ Enigma IV de IV — El Escuadrón Misterioso",
+                    question: "«Liderados por un personaje legendario de la saga, este equipo de élite aparece en Resident Evil 8 y tiene un papel crucial en los eventos del juego. Su líder es Chris Redfield. ¿Cómo se llama este escuadrón?»",
+                    options: [
+                        { text: "S.T.A.R.S.", correct: false },
+                        { text: "U.B.C.S.", correct: false },
+                        { text: "Hound Wolf", correct: true },
+                        { text: "Delta Force", correct: false }
+                    ],
+                    reaction: `"¡Correcto! El legendario escuadrón Hound Wolf de Chris Redfield."`
+                }
+            ];
+
+            let currentTrialIndex = 0;
+            let isComplete = false;
+
+            const dialogueEl = document.getElementById("fairy-dialogue");
+            const trialCard = document.getElementById("trial-card");
+            const stepLabel = document.getElementById("trial-step-label");
+            const questionText = document.getElementById("trial-question-text");
+            const optionsContainer = document.getElementById("trial-options-container");
+            const completionBox = document.getElementById("trial-completion-box");
+
+            function renderCurrentTrial() {
+                if (currentTrialIndex >= TRIALS.length) {
+                    completeTrial();
+                    return;
+                }
+
+                const trial = TRIALS[currentTrialIndex];
+                stepLabel.textContent = trial.title;
+                questionText.textContent = trial.question;
+
+                optionsContainer.innerHTML = "";
+                const letters = ["A", "B", "C", "D"];
+
+                trial.options.forEach((opt, idx) => {
+                    const btn = document.createElement("button");
+                    btn.className = "trial-option-btn";
+                    btn.innerHTML = `
+                        <span class="trial-option-badge">${letters[idx]}</span>
+                        <span>${opt.text}</span>
+                    `;
+
+                    btn.addEventListener("click", (e) => {
+                        handleChoice(opt.correct, trial.reaction, e);
+                    });
+
+                    optionsContainer.appendChild(btn);
+                });
+            }
+
+            function handleChoice(isCorrect, reactionText, event) {
+                if (isComplete) return;
+
+                if (isCorrect) {
+                    // Acierto: Encender gema actual
+                    const gem = document.getElementById(`gem-${currentTrialIndex + 1}`);
+                    if (gem) gem.classList.add("lit");
+
+                    burstSparks(event.clientX, event.clientY, 30, ["#67e8f9", "#fbbf24", "#ffffff", "#10b981"]);
+                    playChimeSound(523 + currentTrialIndex * 120, 1.2, "sine");
+
+                    dialogueEl.textContent = reactionText;
+
+                    currentTrialIndex++;
+                    setTimeout(() => {
+                        renderCurrentTrial();
+                    }, 1200);
+                } else {
+                    // ERROR: Reiniciar todo desde la primera pregunta
+                    trialCard.classList.add("shake-trial");
+                    playChimeSound(240, 0.7, "sawtooth");
+
+                    // Apagar todas las gemas
+                    for (let i = 1; i <= TRIALS.length; i++) {
+                        document.getElementById(`gem-${i}`)?.classList.remove("lit");
+                    }
+
+                    currentTrialIndex = 0; // Vuelve al inicio
+
+                    dialogueEl.innerHTML = `
+                        <span style="color: #f87171;">
+                            "La armonía se ha quebrado... La niebla borra tus pasos y debes iniciar el juicio desde el primer enigma."
+                        </span>
+                    `;
+
+                    setTimeout(() => {
+                        trialCard.classList.remove("shake-trial");
+                        renderCurrentTrial();
+                    }, 1000);
+                }
+            }
+
+            function completeTrial() {
+                isComplete = true;
+                trialCard.style.display = "none";
+                avatarEl?.classList.add("blessed");
+                playPortalOpenSound();
+                burstSparks(window.innerWidth / 2, window.innerHeight / 2, 50, ["#ffffff", "#67e8f9", "#fbbf24", "#10b981"]);
+
+                dialogueEl.innerHTML = `
+                    <span style="color: var(--color-gold-bright); font-size: 1.35rem;">
+                        ✨ ¡Has superado los cuatro enigmas de la Guardiana!
+                    </span><br>
+                    "Has demostrado sabiduría, nobleza y luz. El Sendero de las Maravillas ahora se abre ante ti."
+                `;
+
+                completionBox.style.display = "block";
+            }
+
+            renderCurrentTrial();
+            NavigationManager.initLinks();
+        });
+    </script>
+</body>
+</html>

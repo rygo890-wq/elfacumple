@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍃 El Sendero Mágico — Aethelgard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400;1,600&family=Great+Vibes&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <link rel="stylesheet" href="../css/pages/path.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+    <div class="forest-backdrop"></div>
+    <canvas id="particles-canvas" class="ambient-canvas"></canvas>
+    <div id="cursor-magic-light" class="cursor-light"></div>
+    <div class="mystic-fog-layer"></div>
+
+    <header class="hud-controls" aria-label="Controles">
+        <div></div>
+        <button id="music-toggle" class="music-toggle-btn" aria-label="Música">
+            <div class="music-wave-bars"><span></span><span></span><span></span></div>
+        </button>
+    </header>
+
+    <main class="path-adventure-wrapper">
+        <h1 class="section-title">🍃 El Enigma del Sendero Élfico 🍃</h1>
+        
+        <!-- Acertijo Élfico de los Diez Secretos -->
+        <div class="elven-riddle-card">
+            <p class="riddle-intro-verse">
+                «Diez secretos duermen bajo el susurro de los árboles,<br>
+                pero solo cinco guardan la senda hacia lo desconocido.»
+            </p>
+            <div class="riddle-single-poem">
+                <p>
+                    Uno despierta con la llegada de la primavera<br>
+                    y viste de colores aquello que toca.<br>
+                    Otro danza sin rumbo entre aromas y pétalos,<br>
+                    ligero como un suspiro llevado por el viento.
+                </p>
+                <p style="margin-top: 0.8rem;">
+                    Más profundo yace aquello que la tierra esconde,<br>
+                    nacido en silencio y capaz de guardar la luz en su interior.<br>
+                    Cerca de la humedad crece un pequeño habitante,<br>
+                    silencioso, curioso y coronado por su peculiar sombrero.
+                </p>
+                <p style="margin-top: 0.8rem;">
+                    Y al final espera una señal de tiempos antiguos,<br>
+                    un lenguaje sin voz trazado para quienes saben observar.
+                </p>
+            </div>
+        </div>
+
+        <div class="path-trail-container" id="path-arena">
+            <span class="trail-hint" id="path-hint-label">🌿 Toca los elementos en el orden de la historia...</span>
+
+            <!-- 10 Elementos con Nombres Simples y Claros -->
+            <!-- 1. Flor (Paso 1) -->
+            <div class="path-interact-item path-item-flower" id="item-flower" title="Flor">🌸</div>
+
+            <!-- 2. Mariposa (Paso 2) -->
+            <div class="path-interact-item path-item-butterfly" id="item-butterfly" title="Mariposa">🦋</div>
+
+            <!-- 3. Cristal (Paso 3) -->
+            <div class="path-interact-item path-item-crystal" id="item-crystal" title="Cristal">💎</div>
+
+            <!-- 4. Seta (Paso 4) -->
+            <div class="path-interact-item path-item-mushroom" id="item-mushroom" title="Seta">🍄</div>
+
+            <!-- 5. Runa (Paso 5) -->
+            <div class="path-interact-item path-item-rune" id="item-rune" title="Runa">ᛗ</div>
+
+            <!-- Otros 5 Elementos Simples -->
+            <div class="path-interact-item path-item-leaf" id="item-leaf" title="Hoja">🍃</div>
+            <div class="path-interact-item path-item-dew" id="item-dew" title="Gota">💧</div>
+            <div class="path-interact-item path-item-moonstone" id="item-moonstone" title="Luna">🌙</div>
+            <div class="path-interact-item path-item-quill" id="item-quill" title="Pluma">🪶</div>
+            <div class="path-interact-item path-item-seed" id="item-seed" title="Semilla">🌰</div>
+        </div>
+
+        <!-- Indicador de Progreso -->
+        <p id="path-sequence-status" class="path-status-text">
+            Progreso: <span id="path-step-text" style="color: var(--color-gold-bright);">Esperando inicio (0/5)</span>
+        </p>
+
+        <!-- Botón del Portal -->
+        <div id="path-portal-unlocked-btn" class="path-completion-action" style="display: none;">
+            <button class="btn-elven pulse-glow" data-goto="portal.html" data-transition="portal-flash">
+                🚪 Cruzar el Sendero Revelado ➔
+            </button>
+        </div>
+    </main>
+
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <script type="module">
+        import { NavigationManager } from "../js/navigation.js";
+        import { ForestParticleEngine } from "../js/components/particles.js";
+        import { MusicManager } from "../js/components/music.js";
+        import { Storage } from "../js/utils/storage.js";
+        import { burstSparks } from "../js/utils/dom.js";
+        import { playChimeSound, playPortalOpenSound } from "../js/utils/animations.js";
+        import { CONFIG } from "../js/config.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            NavigationManager.checkAccess(Storage.STAGES.FAIRY, "fairy.html", Storage.STAGES.PATH);
+
+            new ForestParticleEngine("particles-canvas");
+            new MusicManager(CONFIG);
+
+            // ==========================================
+            // SECUENCIA: Flor -> Mariposa -> Cristal -> Seta -> Runa
+            // ==========================================
+            let currentStep = 0;
+
+            const flowerEl = document.getElementById("item-flower");
+            const butterflyEl = document.getElementById("item-butterfly");
+            const crystalEl = document.getElementById("item-crystal");
+            const mushroomEl = document.getElementById("item-mushroom");
+            const runeEl = document.getElementById("item-rune");
+
+            const otherItems = [
+                document.getElementById("item-leaf"),
+                document.getElementById("item-dew"),
+                document.getElementById("item-moonstone"),
+                document.getElementById("item-quill"),
+                document.getElementById("item-seed")
+            ];
+
+            const stepText = document.getElementById("path-step-text");
+            const hintLabel = document.getElementById("path-hint-label");
+            const unlockButtonBox = document.getElementById("path-portal-unlocked-btn");
+            const arena = document.getElementById("path-arena");
+
+            function resetPuzzle(reasonMsg) {
+                currentStep = 0;
+                [flowerEl, butterflyEl, crystalEl, mushroomEl, runeEl].forEach(el => {
+                    el?.classList.remove("step-activated");
+                });
+
+                if (arena) {
+                    arena.classList.add("puzzle-shake");
+                    setTimeout(() => arena.classList.remove("puzzle-shake"), 500);
+                }
+
+                playChimeSound(240, 0.7, "sawtooth");
+                if (stepText) stepText.textContent = reasonMsg;
+                if (hintLabel) hintLabel.textContent = "🌿 Orden incorrecto... Lee el enigma y vuelve a empezar.";
+            }
+
+            // 1. Flor (🌸)
+            flowerEl?.addEventListener("click", (e) => {
+                if (currentStep === 0) {
+                    currentStep = 1;
+                    flowerEl.classList.add("step-activated");
+                    burstSparks(e.clientX, e.clientY, 20, ["#f472b6", "#ffffff"]);
+                    playChimeSound(523.25, 1.0, "sine");
+                    if (stepText) stepText.textContent = "🌸 Flor activada (1/5)";
+                    if (hintLabel) hintLabel.textContent = "✨ Sigue la historia: busca la mariposa...";
+                } else if (currentStep === 1) {
+                    playChimeSound(523.25, 0.5, "sine");
+                } else {
+                    resetPuzzle("Ese no era el paso siguiente... reiniciando.");
+                }
+            });
+
+            // 2. Mariposa (🦋)
+            butterflyEl?.addEventListener("click", (e) => {
+                if (currentStep === 1) {
+                    currentStep = 2;
+                    butterflyEl.classList.add("step-activated");
+                    burstSparks(e.clientX, e.clientY, 20, ["#67e8f9", "#ffffff"]);
+                    playChimeSound(587.33, 1.0, "sine");
+                    if (stepText) stepText.textContent = "🦋 Mariposa activada (2/5)";
+                    if (hintLabel) hintLabel.textContent = "✨ Sigue la historia: busca el cristal...";
+                } else if (currentStep === 2) {
+                    playChimeSound(587.33, 0.5, "sine");
+                } else {
+                    resetPuzzle("Ese no era el paso siguiente... reiniciando.");
+                }
+            });
+
+            // 3. Cristal (💎)
+            crystalEl?.addEventListener("click", (e) => {
+                if (currentStep === 2) {
+                    currentStep = 3;
+                    crystalEl.classList.add("step-activated");
+                    burstSparks(e.clientX, e.clientY, 20, ["#93c5fd", "#c084fc", "#ffffff"]);
+                    playChimeSound(659.25, 1.0, "sine");
+                    if (stepText) stepText.textContent = "💎 Cristal activado (3/5)";
+                    if (hintLabel) hintLabel.textContent = "✨ Sigue la historia: busca la seta...";
+                } else if (currentStep === 3) {
+                    playChimeSound(659.25, 0.5, "sine");
+                } else {
+                    resetPuzzle("Ese no era el paso siguiente... reiniciando.");
+                }
+            });
+
+            // 4. Seta (🍄)
+            mushroomEl?.addEventListener("click", (e) => {
+                if (currentStep === 3) {
+                    currentStep = 4;
+                    mushroomEl.classList.add("step-activated");
+                    burstSparks(e.clientX, e.clientY, 25, ["#34d399", "#10b981", "#ffffff"]);
+                    playChimeSound(739.99, 1.0, "sine");
+                    if (stepText) stepText.textContent = "🍄 Seta activada (4/5)";
+                    if (hintLabel) hintLabel.textContent = "✨ Finalmente: busca la runa...";
+                } else if (currentStep === 4) {
+                    playChimeSound(739.99, 0.5, "sine");
+                } else {
+                    resetPuzzle("Ese no era el paso siguiente... reiniciando.");
+                }
+            });
+
+            // 5. Runa (ᛗ)
+            runeEl?.addEventListener("click", (e) => {
+                if (currentStep === 4) {
+                    currentStep = 5;
+                    runeEl.classList.add("step-activated");
+                    burstSparks(e.clientX, e.clientY, 35, ["#fbbf24", "#10b981", "#ffffff"]);
+                    playPortalOpenSound();
+
+                    if (stepText) stepText.textContent = "ᛗ Runa activada (5/5) — ¡Sendero completado!";
+                    if (hintLabel) hintLabel.textContent = "🌟 ¡El sendero sagrado hacia el portal se ha revelado!";
+
+                    if (unlockButtonBox) {
+                        unlockButtonBox.style.display = "block";
+                        unlockButtonBox.classList.add("fadeInUp");
+                    }
+                } else if (currentStep === 5) {
+                    playChimeSound(880, 0.5, "sine");
+                } else {
+                    resetPuzzle("La runa solo responde al final... completa los pasos previos.");
+                }
+            });
+
+            // Distractores
+            otherItems.forEach(item => {
+                item?.addEventListener("click", (e) => {
+                    burstSparks(e.clientX, e.clientY, 15, ["#fbbf24", "#ffffff"]);
+                    playChimeSound(320, 0.6, "triangle");
+                    if (currentStep !== 5) {
+                        resetPuzzle("Ese elemento no forma parte de la historia...");
+                    }
+                });
+            });
+
+            NavigationManager.initLinks();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌲 El Bosque Silencioso — Aethelgard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400;1,600&family=Great+Vibes&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <link rel="stylesheet" href="../css/pages/forest.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+    <div class="forest-backdrop"></div>
+    <canvas id="particles-canvas" class="ambient-canvas"></canvas>
+    <div id="cursor-magic-light" class="cursor-light"></div>
+    <div class="mystic-fog-layer"></div>
+
+    <header class="hud-controls" aria-label="Controles">
+        <div></div>
+        <button id="music-toggle" class="music-toggle-btn" aria-label="Música" title="Activar música">
+            <div class="music-wave-bars"><span></span><span></span><span></span></div>
+        </button>
+    </header>
+
+    <!-- Contador sutil durante la búsqueda -->
+    <div id="firefly-counter-badge" class="forest-counter-badge">
+        ✨ Luciérnaga atrapada: <strong id="counter-num">0</strong> / 3
+    </div>
+
+    <main class="forest-scene-wrapper">
+        <!-- 1. Pantalla Inicial con Instrucciones -->
+        <div id="forest-intro-box" class="forest-intro-card">
+            <h1 class="section-title" style="margin-bottom: 1.2rem;">🌲 El Bosque Silencioso 🌲</h1>
+            <h2 class="forest-mission-title">🌟 Misión: La Danza de la Luz</h2>
+            <p class="forest-mission-desc">
+                La noche envuelve los senderos de Aethelgard...<br>
+                Una pequeña luciérnaga dorada se oculta entre las sombras.<br>
+                <strong>Obsérvala con atención y atrápala 3 veces</strong> mientras revolotea por el bosque para que ilumine tu camino.
+            </p>
+            <button id="start-search-btn" class="btn-elven" style="font-size: 1.15rem; padding: 1.1rem 2.8rem;">
+                ✨ COMENZAR BÚSQUEDA
+            </button>
+        </div>
+
+        <!-- 2. Tarjeta de Victoria al atraparla 3 veces -->
+        <div id="forest-victory-box" class="forest-victory-card">
+            <h2 class="section-title" style="color: var(--color-gold-bright); font-size: 2rem; margin-bottom: 1rem;">
+                ✨ ¡El Sendero ha sido Iluminado! ✨
+            </h2>
+            <p style="font-family: var(--font-subheading); font-size: 1.25rem; color: var(--color-forest-glow); font-style: italic; margin-bottom: 2rem; line-height: 1.8;">
+                "Has capturado el resplandor de la luciérnaga 3 veces. Su luz dorada disipa la bruma y la Guardiana del Bosque aguarda por ti."
+            </p>
+            <button class="btn-elven pulse-glow" data-goto="fairy.html" data-transition="fade" style="font-size: 1.15rem; padding: 1.1rem 2.8rem;">
+                🌟 Seguir la Luz hacia la Guardiana ➔
+            </button>
+        </div>
+    </main>
+
+    <!-- Luciérnaga Pequeña que aparece en lugares aleatorios -->
+    <div id="forest-random-firefly" class="special-guide-firefly" title="¡Atrápame!"></div>
+
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <script type="module">
+        import { NavigationManager } from "../js/navigation.js";
+        import { ForestParticleEngine } from "../js/components/particles.js";
+        import { MusicManager } from "../js/components/music.js";
+        import { Storage } from "../js/utils/storage.js";
+        import { burstSparks } from "../js/utils/dom.js";
+        import { playChimeSound, playPortalOpenSound } from "../js/utils/animations.js";
+        import { CONFIG } from "../js/config.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            NavigationManager.checkAccess(null, "../index.html", Storage.STAGES.FOREST);
+
+            new ForestParticleEngine("particles-canvas");
+            new MusicManager(CONFIG);
+
+            const introBox = document.getElementById("forest-intro-box");
+            const victoryBox = document.getElementById("forest-victory-box");
+            const startBtn = document.getElementById("start-search-btn");
+            const firefly = document.getElementById("forest-random-firefly");
+            const counterBadge = document.getElementById("firefly-counter-badge");
+            const counterNum = document.getElementById("counter-num");
+
+            let catches = 0;
+            const maxCatches = 3;
+
+            // Función para posicionar la luciérnaga al azar en la pantalla
+            function spawnFirefly() {
+                if (catches >= maxCatches) return;
+
+                // Coordenadas seguras dentro de la ventana (10% a 90% ancho, 15% a 85% alto)
+                const minX = 10;
+                const maxX = 88;
+                const minY = 15;
+                const maxY = 82;
+
+                const randX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+                const randY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
+
+                firefly.style.left = `${randX}vw`;
+                firefly.style.top = `${randY}vh`;
+                firefly.style.display = "block";
+                firefly.classList.remove("fleeing");
+            }
+
+            // Iniciar búsqueda: se ocultan las instrucciones y solo queda el fondo
+            startBtn?.addEventListener("click", () => {
+                introBox.classList.add("hidden");
+                counterBadge.classList.add("visible");
+                setTimeout(() => {
+                    spawnFirefly();
+                }, 500);
+            });
+
+            // Tocar la luciérnaga
+            firefly?.addEventListener("click", (e) => {
+                if (catches >= maxCatches) return;
+
+                catches++;
+                if (counterNum) counterNum.textContent = catches;
+
+                // Chispas y sonido progresivo
+                const notes = [523.25, 659.25, 880];
+                burstSparks(e.clientX, e.clientY, 25, ["#fef08a", "#fbbf24", "#ffffff", "#10b981"]);
+                playChimeSound(notes[catches - 1] || 880, 1.0, "sine");
+
+                firefly.classList.add("fleeing");
+
+                if (catches < maxCatches) {
+                    // Mover a otra posición al azar tras breve pausa
+                    setTimeout(() => {
+                        spawnFirefly();
+                    }, 400);
+                } else {
+                    // 3 de 3 completado!
+                    playPortalOpenSound();
+                    firefly.style.display = "none";
+                    counterBadge.classList.remove("visible");
+
+                    setTimeout(() => {
+                        victoryBox.classList.add("visible");
+                    }, 600);
+                }
+            });
+
+            NavigationManager.initLinks();
+        });
+    </script>
+</body>
+</html>
