@@ -216,8 +216,8 @@
 
             function completeTrial() {
                 isComplete = true;
+                Storage.setStage(Storage.STAGES.FAIRY, "true");
                 trialCard.style.display = "none";
-                avatarEl?.classList.add("blessed");
                 playPortalOpenSound();
                 burstSparks(window.innerWidth / 2, window.innerHeight / 2, 50, ["#ffffff", "#67e8f9", "#fbbf24", "#10b981"]);
 

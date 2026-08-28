@@ -10,7 +10,7 @@ import { playPortalOpenSound, playChimeSound } from "./utils/animations.js";
 // 🛠️ MODO DE TESTEO (DEV TEST MODE)
 // Cambia a 'false' para quitar el botón de saltar página al terminar las pruebas.
 // ==========================================================================
-export const DEV_TEST_MODE = false;
+export const DEV_TEST_MODE = true;
 
 export class NavigationManager {
     /**
